@@ -10,6 +10,7 @@
             "name": "Open bouble.html",
             "file": "c:\\Users\\sukis\\Desktop\\GitHub\\Test\\bouble.html"
         }
+        
         {
             "type": "chrome",
             "request": "launch",
