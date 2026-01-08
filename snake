@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彩色豆子贪吃蛇 - 增强版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        #gameCanvas {
+            background-color: #111;
+            border: 2px solid #333;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+        
+        .stat-box {
+            background-color: #1a1a1a;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: #4CAF50;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        button {
+            background-color: #2a2a2a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            border: 1px solid #333;
+        }
+        
+        button:hover {
+            background-color: #3a3a3a;
+            transform: translateY(-2px);
+        }
+        
+        #startBtn {
+            background-color: #4CAF50;
+        }
+        
+        #startBtn:hover {
+            background-color: #3d8b40;
+        }
+        
+        #pauseBtn {
+            background-color: #ff9800;
+        }
+        
+        #pauseBtn:hover {
+            background-color: #e68900;
+        }
+        
+        #restartBtn {
+            background-color: #2196F3;
+        }
+        
+        #restartBtn:hover {
+            background-color: #0b7dda;
+        }
+        
+        .skin-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .skin-btn {
+            padding: 8px 15px;
+            min-width: auto;
+            font-size: 0.9rem;
+            background-color: #333;
+        }
+        
+        .skin-btn.active {
+            background-color: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+        
+        .instructions {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            width: 100%;
+            max-width: 600px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .instructions h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .instructions span.key {
+            display: inline-block;
+            background-color: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0 3px;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 10;
+            border: 2px solid #4CAF50;
+            width: 80%;
+            max-width: 400px;
+        }
+        
+        .game-over h2 {
+            color: #f44336;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .game-over p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        .color-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        
+        .effect-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.9rem;
+            color: #FFEB3B;
+            border: 1px solid #FFEB3B;
+        }
+        
+        @media (max-width: 650px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .stat-box {
+                width: 100%;
+            }
+            
+            .skin-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>彩色豆子贪吃蛇 - 增强版</h1>
+        <p class="subtitle">吃到彩色豆子改变蛇身颜色，选择皮肤获得不同特效！</p>
+    </div>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas" width="600" height="450"></canvas>
+        
+        <div class="effect-indicator" id="effectIndicator">
+            特效激活中！
+        </div>
+        
+        <div class="game-over" id="gameOverScreen">
+            <h2>游戏结束!</h2>
+            <p>你的得分: <span id="finalScore">0</span></p>
+            <p>吃到豆子: <span id="finalFood">0</span> 个</p>
+            <p>最高连击: <span id="finalCombo">0</span></p>
+            <button id="playAgainBtn">再玩一次</button>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-label">得分</div>
+            <div class="stat-value" id="score">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">长度</div>
+            <div class="stat-value" id="length">3</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">豆子</div>
+            <div class="stat-value" id="foodCount">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">速度</div>
+            <div class="stat-value" id="speed">1</div>
+        </div>
+    </div>
+    
+    <div class="skin-selector">
+        <button class="skin-btn active" data-skin="default">默认皮肤</button>
+        <button class="skin-btn" data-skin="rainbow">彩虹皮肤</button>
+        <button class="skin-btn" data-skin="fire">火焰皮肤</button>
+        <button class="skin-btn" data-skin="ice">冰霜皮肤</button>
+        <button class="skin-btn" data-skin="neon">霓虹皮肤</button>
+    </div>
+    
+    <div class="controls">
+        <button id="startBtn">开始游戏</button>
+        <button id="pauseBtn">暂停游戏</button>
+        <button id="restartBtn">重新开始</button>
+        <button id="increaseSpeedBtn">加速</button>
+        <button id="decreaseSpeedBtn">减速</button>
+    </div>
+    
+    <div class="instructions">
+        <h3>游戏说明 - 新增功能</h3>
+        <ul>
+            <li>使用 <span class="key">↑</span> <span class="key">↓</span> <span class="key">←</span> <span class="key">→</span> 方向键控制蛇的移动</li>
+            <li>吃到彩色豆子会改变蛇身颜色，连续吃到同色豆子会触发特效</li>
+            <li>选择不同皮肤获得独特视觉效果</li>
+            <li>彩虹皮肤：蛇身呈现彩虹渐变效果</li>
+            <li>火焰皮肤：蛇身有火焰动画效果</li>
+            <li>冰霜皮肤：蛇身有冰霜发光效果</li>
+            <li>霓虹皮肤：蛇身有霓虹灯闪烁效果</li>
+            <li>撞到墙壁或自己的身体游戏结束</li>
+        </ul>
+    </div>
+
+    <script>
+        // 获取Canvas元素和上下文
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 游戏状态变量
+        let snake = [];
+        let food = {};
+        let direction = 'right';
+        let nextDirection = 'right';
+        let gameRunning = false;
+        let gameLoop;
+        let score = 0;
+        let foodCount = 0;
+        let speed = 1;
+        let lastFoodColor = null;
+        let consecutiveSameColor = 0;
+        let maxConsecutive = 0;
+        let effectActive = false;
+        let effectTimer = 0;
+        let currentSkin = 'default';
+        
+        // 蛇身颜色状态
+        let snakeColors = [];
+        let snakeHeadColor = '#4CAF50';
+        let snakeBodyColor = '#8BC34A';
+        let snakeColorIndex = 0;
+        
+        // 皮肤配置
+        const skins = {
+            default: {
+                headColor: '#4CAF50',
+                bodyColor: '#8BC34A',
+                effect: null
+            },
+            rainbow: {
+                headColor: '#FF5252',
+                bodyColor: '#FF9800',
+                effect: 'rainbow'
+            },
+            fire: {
+                headColor: '#FF5722',
+                bodyColor: '#FF9800',
+                effect: 'fire'
+            },
+            ice: {
+                headColor: '#03A9F4',
+                bodyColor: '#00BCD4',
+                effect: 'ice'
+            },
+            neon: {
+                headColor: '#9C27B0',
+                bodyColor: '#E91E63',
+                effect: 'neon'
+            }
+        };
+        
+        // 彩虹颜色
+        const rainbowColors = [
+            '#FF5252', // 红色
+            '#FF9800', // 橙色
+            '#FFEB3B', // 黄色
+            '#4CAF50', // 绿色
+            '#2196F3', // 蓝色
+            '#9C27B0'  // 紫色
+        ];
+        
+        // 游戏配置
+        const gridSize = 20;
+        const gridWidth = canvas.width / gridSize;
+        const gridHeight = canvas.height / gridSize;
+        
+        // 颜色定义
+        const foodColors = rainbowColors;
+        
+        // 初始化游戏
+        function initGame() {
+            // 初始化蛇 - 长度为3
+            snake = [
+                {x: 5, y: 10},
+                {x: 4, y: 10},
+                {x: 3, y: 10}
+            ];
+            
+            // 初始化蛇身颜色
+            snakeColors = [];
+            for (let i = 0; i < snake.length; i++) {
+                snakeColors.push(getSnakeColor(i));
+            }
+            
+            // 生成第一个食物
+            generateFood();
+            
+            // 重置游戏状态
+            direction = 'right';
+            nextDirection = 'right';
+            score = 0;
+            foodCount = 0;
+            speed = 1;
+            lastFoodColor = null;
+            consecutiveSameColor = 0;
+            maxConsecutive = 0;
+            effectActive = false;
+            effectTimer = 0;
+            
+            // 更新皮肤颜色
+            updateSkinColors();
+            
+            // 更新UI
+            updateUI();
+        }
+        
+        // 获取蛇身颜色（根据皮肤和位置）
+        function getSnakeColor(index) {
+            const skin = skins[currentSkin];
+            
+            if (index === 0) return skin.headColor;
+            
+            if (skin.effect === 'rainbow') {
+                // 彩虹效果：每个身体段不同颜色
+                return rainbowColors[(index - 1) % rainbowColors.length];
+            } else if (skin.effect === 'fire') {
+                // 火焰效果：橙色到红色渐变
+                const intensity = Math.min(0.8, index / 20);
+                return `rgb(255, ${Math.floor(87 * (1 - intensity))}, ${Math.floor(34 * (1 - intensity))})`;
+            } else if (skin.effect === 'ice') {
+                // 冰霜效果：蓝色渐变
+                const intensity = Math.min(0.7, index / 25);
+                return `rgb(${Math.floor(3 + 200 * intensity)}, ${Math.floor(169 + 86 * intensity)}, ${Math.floor(244 - 44 * intensity)})`;
+            } else if (skin.effect === 'neon') {
+                // 霓虹效果：紫色到粉色渐变
+                const hue = (Date.now() / 50 + index * 10) % 360;
+                return `hsl(${hue}, 100%, 60%)`;
+            }
+            
+            // 默认皮肤或没有特效
+            return index === 0 ? skin.headColor : skin.bodyColor;
+        }
+        
+        // 更新皮肤颜色
+        function updateSkinColors() {
+            const skin = skins[currentSkin];
+            snakeHeadColor = skin.headColor;
+            snakeBodyColor = skin.bodyColor;
+            
+            // 更新所有蛇段颜色
+            for (let i = 0; i < snakeColors.length; i++) {
+                snakeColors[i] = getSnakeColor(i);
+            }
+        }
+        
+        // 切换皮肤
+        function changeSkin(skinName) {
+            currentSkin = skinName;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.skin-btn').forEach(btn => {
+                if (btn.dataset.skin === skinName) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // 更新蛇身颜色
+            updateSkinColors();
+            
+            // 如果游戏正在进行中，重绘画布
+            if (gameRunning || snake.length > 0) {
+                drawGame();
+            }
+        }
+        
+        // 生成随机食物
+        function generateFood() {
+            // 随机选择颜色
+            const colorIndex = Math.floor(Math.random() * foodColors.length);
+            const color = foodColors[colorIndex];
+            
+            // 随机位置，确保不在蛇身上
+            let foodOnSnake;
+            do {
+                foodOnSnake = false;
+                food = {
+                    x: Math.floor(Math.random() * gridWidth),
+                    y: Math.floor(Math.random() * gridHeight),
+                    color: color
+                };
+                
+                // 检查食物是否生成在蛇身上
+                for (let segment of snake) {
+                    if (segment.x === food.x && segment.y === food.y) {
+                        foodOnSnake = true;
+                        break;
+                    }
+                }
+            } while (foodOnSnake);
+        }
+        
+        // 绘制游戏元素
+        function drawGame() {
+            // 清除画布（黑色背景）
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格线
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 0.5;
+            
+            // 绘制垂直线
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // 绘制水平线
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // 绘制蛇
+            for (let i = 0; i < snake.length; i++) {
+                const segment = snake[i];
+                const segmentColor = snakeColors[i] || getSnakeColor(i);
+                
+                // 绘制蛇段
+                ctx.fillStyle = segmentColor;
+                
+                // 特效处理
+                if (effectActive && i < consecutiveSameColor) {
+                    // 特效激活的蛇段
+                    drawSegmentWithEffect(segment, segmentColor, i);
+                } else {
+                    // 普通蛇段
+                    drawSegment(segment, segmentColor, i);
+                }
+            }
+            
+            // 绘制食物（彩色豆子）
+            drawFood();
+            
+            // 绘制特效指示器
+            if (effectActive) {
+                drawEffectIndicator();
+            }
+        }
+        
+        // 绘制蛇段
+        function drawSegment(segment, color, index) {
+            // 蛇头
+            if (index === 0) {
+                // 绘制蛇头，稍微大一点
+                ctx.fillStyle = color;
+                ctx.fillRect(
+                    segment.x * gridSize, 
+                    segment.y * gridSize, 
+                    gridSize, 
+                    gridSize
+                );
+                
+                // 蛇头高亮效果
+                ctx.fillStyle = lightenColor(color, 30);
+                ctx.fillRect(
+                    segment.x * gridSize + 4, 
+                    segment.y * gridSize + 4, 
+                    gridSize - 8, 
+                    gridSize - 8
+                );
+                
+                // 绘制眼睛（根据方向）
+                ctx.fillStyle = '#000';
+                const eyeSize = 3;
+                if (direction === 'right') {
+                    // 右眼
+                    ctx.fillRect(
+                        segment.x * gridSize + gridSize - 7, 
+                        segment.y * gridSize + 5, 
+                        eyeSize, eyeSize
+                    );
+                    // 左眼
+                    ctx.fillRect(
+                        segment.x * gridSize + gridSize - 7, 
+                        segment.y * gridSize + gridSize - 8, 
+                        eyeSize, eyeSize
+                    );
+                } else if (direction === 'left') {
+                    // 右眼
+                    ctx.fillRect(
+                        segment.x * gridSize + 4, 
+                        segment.y * gridSize + 5, 
+                        eyeSize, eyeSize
+                    );
+                    // 左眼
+                    ctx.fillRect(
+                        segment.x * gridSize + 4, 
+                        segment.y * gridSize + gridSize - 8, 
+                        eyeSize, eyeSize
+                    );
+                } else if (direction === 'up') {
+                    // 右眼
+                    ctx.fillRect(
+                        segment.x * gridSize + 5, 
+                        segment.y * gridSize + 4, 
+                        eyeSize, eyeSize
+                    );
+                    // 左眼
+                    ctx.fillRect(
+                        segment.x * gridSize + gridSize - 8, 
+                        segment.y * gridSize + 4, 
+                        eyeSize, eyeSize
+                    );
+                } else if (direction === 'down') {
+                    // 右眼
+                    ctx.fillRect(
+                        segment.x * gridSize + 5, 
+                        segment.y * gridSize + gridSize - 7, 
+                        eyeSize, eyeSize
+                    );
+                    // 左眼
+                    ctx.fillRect(
+                        segment.x * gridSize + gridSize - 8, 
+                        segment.y * gridSize + gridSize - 7, 
+                        eyeSize, eyeSize
+                    );
+                }
+            } 
+            // 蛇身
+            else {
+                // 绘制身体段
+                ctx.fillStyle = color;
+                ctx.fillRect(
+                    segment.x * gridSize, 
+                    segment.y * gridSize, 
+                    gridSize, 
+                    gridSize
+                );
+                
+                // 身体段内部颜色
+                ctx.fillStyle = lightenColor(color, 20);
+                ctx.fillRect(
+                    segment.x * gridSize + 2, 
+                    segment.y * gridSize + 2, 
+                    gridSize - 4, 
+                    gridSize - 4
+                );
+            }
+        }
+        
+        // 绘制带特效的蛇段
+        function drawSegmentWithEffect(segment, color, index) {
+            const centerX = segment.x * gridSize + gridSize / 2;
+            const centerY = segment.y * gridSize + gridSize / 2;
+            
+            // 绘制发光效果
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 15;
+            
+            // 绘制蛇段
+            drawSegment(segment, color, index);
+            
+            // 重置阴影
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            
+            // 如果是蛇头，绘制额外特效
+            if (index === 0) {
+                // 绘制脉冲光环
+                const pulseSize = (Math.sin(Date.now() / 200) * 3) + 8;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, pulseSize, 0, Math.PI * 2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制粒子效果
+                if (consecutiveSameColor >= 3) {
+                    drawParticles(centerX, centerY, color);
+                }
+            }
+        }
+        
+        // 绘制粒子效果
+        function drawParticles(x, y, color) {
+            const particleCount = 8;
+            const time = Date.now() / 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const angle = time + (i * Math.PI * 2 / particleCount);
+                const radius = 5 + Math.sin(time * 0.5 + i) * 3;
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                
+                ctx.beginPath();
+                ctx.arc(px, py, 2, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+        }
+        
+        // 绘制食物
+        function drawFood() {
+            // 绘制圆形食物
+            ctx.fillStyle = food.color;
+            
+            // 如果特效激活，食物也发光
+            if (effectActive && lastFoodColor === food.color) {
+                ctx.shadowColor = food.color;
+                ctx.shadowBlur = 15;
+            }
+            
+            ctx.beginPath();
+            const centerX = food.x * gridSize + gridSize / 2;
+            const centerY = food.y * gridSize + gridSize / 2;
+            const radius = gridSize / 2 - 2;
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 重置阴影
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            
+            // 食物高光效果
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.arc(centerX - radius/3, centerY - radius/3, radius/3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 绘制食物颜色指示
+            ctx.fillStyle = food.color;
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('豆', centerX, centerY + 4);
+        }
+        
+        // 绘制特效指示器
+        function drawEffectIndicator() {
+            const indicator = document.getElementById('effectIndicator');
+            if (effectActive) {
+                indicator.style.display = 'block';
+                indicator.textContent = `连击 x${consecutiveSameColor} 特效激活中！`;
+                
+                // 脉冲效果
+                const pulse = Math.sin(Date.now() / 200) * 0.5 + 0.5;
+                indicator.style.opacity = 0.7 + pulse * 0.3;
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+        
+        // 颜色变亮函数
+        function lightenColor(color, percent) {
+            // 简单实现，实际应用中可能需要更复杂的颜色处理
+            return color; // 简化版，实际可以添加颜色亮度调整逻辑
+        }
+        
+        // 更新游戏状态
+        function updateGame() {
+            // 更新蛇的方向
+            direction = nextDirection;
+            
+            // 根据方向移动蛇头
+            const head = {...snake[0]};
+            
+            switch(direction) {
+                case 'up':
+                    head.y -= 1;
+                    break;
+                case 'down':
+                    head.y += 1;
+                    break;
+                case 'left':
+                    head.x -= 1;
+                    break;
+                case 'right':
+                    head.x += 1;
+                    break;
+            }
+            
+            // 检查是否撞墙
+            if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
+                gameOver();
+                return;
+            }
+            
+            // 检查是否撞到自己
+            for (let segment of snake) {
+                if (head.x === segment.x && head.y === segment.y) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // 将新的头部添加到蛇
+            snake.unshift(head);
+            // 为新头部添加颜色
+            snakeColors.unshift(getSnakeColor(0));
+            
+            // 检查是否吃到食物
+            if (head.x === food.x && head.y === food.y) {
+                // 增加分数
+                let points = 10;
+                foodCount++;
+                
+                // 检查是否连续吃到相同颜色的豆子
+                if (lastFoodColor === food.color) {
+                    consecutiveSameColor++;
+                    points += consecutiveSameColor * 8; // 额外加分
+                    
+                    // 更新最大连击数
+                    if (consecutiveSameColor > maxConsecutive) {
+                        maxConsecutive = consecutiveSameColor;
+                    }
+                    
+                    // 如果连续吃到3个以上同色豆子，激活特效
+                    if (consecutiveSameColor >= 3) {
+                        effectActive = true;
+                        effectTimer = 60; // 60帧特效
+                    }
+                } else {
+                    consecutiveSameColor = 1;
+                    effectActive = false;
+                }
+                
+                // 更新最后吃到的颜色
+                lastFoodColor = food.color;
+                
+                // 根据速度计算得分倍数
+                points *= speed;
+                score += points;
+                
+                // 每吃5个食物增加一次速度
+                if (foodCount % 5 === 0 && speed < 5) {
+                    speed++;
+                }
+                
+                // 生成新食物
+                generateFood();
+                
+                // 更新UI
+                updateUI();
+            } else {
+                // 如果没有吃到食物，移除尾部
+                snake.pop();
+                snakeColors.pop();
+                
+                // 减少特效计时器
+                if (effectTimer > 0) {
+                    effectTimer--;
+                    if (effectTimer === 0) {
+                        effectActive = false;
+                    }
+                }
+            }
+        }
+        
+        // 游戏循环
+        function runGame() {
+            updateGame();
+            drawGame();
+            
+            // 根据速度调整游戏循环速度
+            const speedFactor = 6 - speed; // 速度越快，间隔越短
+            clearTimeout(gameLoop);
+            if (gameRunning) {
+                gameLoop = setTimeout(runGame, 100 * speedFactor);
+            }
+        }
+        
+        // 开始游戏
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                runGame();
+                document.getElementById('startBtn').textContent = '游戏进行中';
+            }
+        }
+        
+        // 暂停游戏
+        function pauseGame() {
+            gameRunning = !gameRunning;
+            document.getElementById('pauseBtn').textContent = gameRunning ? '暂停游戏' : '继续游戏';
+            
+            if (gameRunning) {
+                runGame();
+            } else {
+                clearTimeout(gameLoop);
+            }
+        }
+        
+        // 重新开始游戏
+        function restartGame() {
+            clearTimeout(gameLoop);
+            initGame();
+            gameRunning = false;
+            document.getElementById('startBtn').textContent = '开始游戏';
+            document.getElementById('pauseBtn').textContent = '暂停游戏';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('effectIndicator').style.display = 'none';
+            drawGame();
+        }
+        
+        // 游戏结束
+        function gameOver() {
+            gameRunning = false;
+            clearTimeout(gameLoop);
+            
+            // 显示游戏结束界面
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalFood').textContent = foodCount;
+            document.getElementById('finalCombo').textContent = maxConsecutive;
+            document.getElementById('gameOverScreen').style.display = 'block';
+            
+            // 更新开始按钮文本
+            document.getElementById('startBtn').textContent = '开始游戏';
+            
+            // 隐藏特效指示器
+            document.getElementById('effectIndicator').style.display = 'none';
+        }
+        
+        // 更新UI显示
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('length').textContent = snake.length;
+            document.getElementById('foodCount').textContent = foodCount;
+            document.getElementById('speed').textContent = speed;
+        }
+        
+        // 改变游戏速度
+        function changeSpeed(change) {
+            const newSpeed = speed + change;
+            if (newSpeed >= 1 && newSpeed <= 5) {
+                speed = newSpeed;
+                updateUI();
+                
+                // 如果游戏正在进行中，重启游戏循环以应用新速度
+                if (gameRunning) {
+                    clearTimeout(gameLoop);
+                    runGame();
+                }
+            }
+        }
+        
+        // 键盘控制
+        document.addEventListener('keydown', (event) => {
+            // 防止按键滚动页面
+            if ([37, 38, 39, 40].includes(event.keyCode)) {
+                event.preventDefault();
+            }
+            
+            // 根据按键更新方向，但不可直接反向移动
+            switch(event.key) {
+                case 'ArrowUp':
+                    if (direction !== 'down') nextDirection = 'up';
+                    break;
+                case 'ArrowDown':
+                    if (direction !== 'up') nextDirection = 'down';
+                    break;
+                case 'ArrowLeft':
+                    if (direction !== 'right') nextDirection = 'left';
+                    break;
+                case 'ArrowRight':
+                    if (direction !== 'left') nextDirection = 'right';
+                    break;
+                case ' ':
+                    // 空格键暂停/继续
+                    pauseGame();
+                    break;
+            }
+        });
+        
+        // 按钮事件监听
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('pauseBtn').addEventListener('click', pauseGame);
+        document.getElementById('restartBtn').addEventListener('click', restartGame);
+        document.getElementById('playAgainBtn').addEventListener('click', restartGame);
+        document.getElementById('increaseSpeedBtn').addEventListener('click', () => changeSpeed(1));
+        document.getElementById('decreaseSpeedBtn').addEventListener('click', () => changeSpeed(-1));
+        
+        // 皮肤选择按钮事件
+        document.querySelectorAll('.skin-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                changeSkin(btn.dataset.skin);
+            });
+        });
+        
+        // 初始化游戏
+        initGame();
+        drawGame();
+    </script>
+</body>
+</html>
