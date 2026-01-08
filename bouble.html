@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泡泡龙游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3c4f3;
+            margin-bottom: 25px;
+        }
+        
+        .game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        .score-container, .level-container, .bubbles-left-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        
+        .score-label, .level-label, .bubbles-left-label {
+            font-size: 1rem;
+            color: #a3c4f3;
+            margin-bottom: 5px;
+        }
+        
+        .score-value, .level-value, .bubbles-left-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #feb47b;
+        }
+        
+        .canvas-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        canvas {
+            display: block;
+            background: rgba(0, 10, 30, 0.9);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .angle-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .angle-label {
+            margin-right: 15px;
+            color: #a3c4f3;
+            font-size: 1.1rem;
+            min-width: 80px;
+        }
+        
+        .angle-slider {
+            flex-grow: 1;
+            height: 10px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .angle-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .angle-display {
+            margin-left: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #feb47b;
+            min-width: 40px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-fire {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+        }
+        
+        .btn-restart {
+            background: linear-gradient(to right, #36d1dc, #5b86e5);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .instructions {
+            max-width: 800px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        
+        .instructions h2 {
+            color: #feb47b;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .instructions li:before {
+            content: "•";
+            color: #ff7e5f;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            z-index: 10;
+            display: none;
+        }
+        
+        .game-over h2 {
+            font-size: 3rem;
+            color: #ff7e5f;
+            margin-bottom: 20px;
+        }
+        
+        .final-score {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #feb47b;
+        }
+        
+        .next-bubble {
+            position: absolute;
+            top: 20px;
+            right: -70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .next-bubble-label {
+            font-size: 1rem;
+            color: #a3c4f3;
+            margin-bottom: 10px;
+        }
+        
+        .next-bubble-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #a3c4f3;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .score-container, .level-container, .bubbles-left-container {
+                min-width: 100%;
+            }
+            
+            .next-bubble {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .canvas-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>泡泡龙游戏</h1>
+        <p class="subtitle">发射泡泡，匹配三个或更多相同颜色的泡泡来消除它们！</p>
+    </div>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-container">
+                <div class="score-label">得分</div>
+                <div class="score-value">0</div>
+            </div>
+            
+            <div class="level-container">
+                <div class="level-label">关卡</div>
+                <div class="level-value">1</div>
+            </div>
+            
+            <div class="bubbles-left-container">
+                <div class="bubbles-left-label">剩余泡泡</div>
+                <div class="bubbles-left-value">50</div>
+            </div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            
+            <div class="next-bubble">
+                <div class="next-bubble-label">下一个</div>
+                <div class="next-bubble-preview" id="nextBubble"></div>
+            </div>
+            
+            <div class="game-over" id="gameOverScreen">
+                <h2>游戏结束</h2>
+                <div class="final-score">最终得分: <span id="finalScore">0</span></div>
+                <button class="btn btn-restart" id="restartButton">重新开始</button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="angle-control">
+                <div class="angle-label">发射角度:</div>
+                <input type="range" min="1" max="179" value="90" class="angle-slider" id="angleSlider">
+                <div class="angle-display">90°</div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-fire" id="fireButton">发射泡泡</button>
+                <button class="btn btn-restart" id="newGameButton">新游戏</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>游戏说明</h2>
+        <ul>
+            <li>使用滑块调整发射角度（1°-179°），然后点击"发射泡泡"按钮</li>
+            <li>当三个或更多相同颜色的泡泡连接在一起时，它们会被消除</li>
+            <li>每次成功消除泡泡会获得分数，连续消除会获得额外分数</li>
+            <li>每消除25个泡泡，关卡会提升，泡泡下降速度会增加</li>
+            <li>游戏共有50个泡泡，用完或泡泡触底则游戏结束</li>
+            <li>目标是尽可能获得高分！</li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>泡泡龙游戏 - 使用HTML5 Canvas和JavaScript制作</p>
+    </div>
+
+    <script>
+        // 游戏主逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.querySelector('.score-value');
+            const levelElement = document.querySelector('.level-value');
+            const bubblesLeftElement = document.querySelector('.bubbles-left-value');
+            const angleSlider = document.getElementById('angleSlider');
+            const angleDisplay = document.querySelector('.angle-display');
+            const fireButton = document.getElementById('fireButton');
+            const newGameButton = document.getElementById('newGameButton');
+            const restartButton = document.getElementById('restartButton');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            const finalScoreElement = document.getElementById('finalScore');
+            const nextBubblePreview = document.getElementById('nextBubble');
+            
+            // 游戏配置
+            const config = {
+                bubbleRadius: 20,
+                bubbleSpeed: 5,
+                rows: 8,
+                cols: 15,
+                startY: 50,
+                bubbleColors: ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE']
+            };
+            
+            // 游戏状态
+            let gameState = {
+                score: 0,
+                level: 1,
+                bubblesLeft: 50,
+                isFiring: false,
+                gameOver: false,
+                bubbles: [],
+                currentBubble: null,
+                nextBubble: null,
+                angle: 90,
+                bubbleGrid: []
+            };
+            
+            // 初始化游戏
+            function initGame() {
+                gameState.score = 0;
+                gameState.level = 1;
+                gameState.bubblesLeft = 50;
+                gameState.isFiring = false;
+                gameState.gameOver = false;
+                gameState.bubbles = [];
+                gameState.currentBubble = null;
+                gameState.bubbleGrid = [];
+                gameState.angle = 90;
+                
+                // 初始化泡泡网格
+                for (let row = 0; row < config.rows; row++) {
+                    gameState.bubbleGrid[row] = [];
+                    for (let col = 0; col < config.cols; col++) {
+                        // 随机生成一些初始泡泡
+                        if (row < 3 && Math.random() > 0.5) {
+                            const colorIndex = Math.floor(Math.random() * config.bubbleColors.length);
+                            gameState.bubbleGrid[row][col] = {
+                                x: col * (config.bubbleRadius * 2 + 5) + config.bubbleRadius + 5,
+                                y: row * (config.bubbleRadius * 2 + 5) + config.startY,
+                                color: config.bubbleColors[colorIndex],
+                                radius: config.bubbleRadius,
+                                row: row,
+                                col: col
+                            };
+                        } else {
+                            gameState.bubbleGrid[row][col] = null;
+                        }
+                    }
+                }
+                
+                // 创建第一个当前泡泡和下一个泡泡
+                createNewBubble();
+                createNextBubble();
+                
+                // 更新UI
+                updateUI();
+                gameOverScreen.style.display = 'none';
+                
+                // 绘制游戏
+                drawGame();
+            }
+            
+            // 创建新的当前泡泡
+            function createNewBubble() {
+                const colorIndex = Math.floor(Math.random() * config.bubbleColors.length);
+                gameState.currentBubble = {
+                    x: canvas.width / 2,
+                    y: canvas.height - config.bubbleRadius - 10,
+                    color: gameState.nextBubble ? gameState.nextBubble.color : config.bubbleColors[colorIndex],
+                    radius: config.bubbleRadius,
+                    dx: 0,
+                    dy: 0,
+                    active: true
+                };
+                
+                // 如果有下一个泡泡，使用它，然后生成新的下一个泡泡
+                if (gameState.nextBubble) {
+                    gameState.currentBubble.color = gameState.nextBubble.color;
+                    createNextBubble();
+                }
+            }
+            
+            // 创建下一个泡泡预览
+            function createNextBubble() {
+                const colorIndex = Math.floor(Math.random() * config.bubbleColors.length);
+                gameState.nextBubble = {
+                    color: config.bubbleColors[colorIndex]
+                };
+                
+                // 更新预览
+                nextBubblePreview.style.backgroundColor = gameState.nextBubble.color;
+            }
+            
+            // 更新UI显示
+            function updateUI() {
+                scoreElement.textContent = gameState.score;
+                levelElement.textContent = gameState.level;
+                bubblesLeftElement.textContent = gameState.bubblesLeft;
+                angleSlider.value = gameState.angle;
+                angleDisplay.textContent = `${gameState.angle}°`;
+            }
+            
+            // 绘制游戏
+            function drawGame() {
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 绘制背景网格
+                drawGrid();
+                
+                // 绘制所有固定在网格中的泡泡
+                for (let row = 0; row < config.rows; row++) {
+                    for (let col = 0; col < config.cols; col++) {
+                        const bubble = gameState.bubbleGrid[row][col];
+                        if (bubble) {
+                            drawBubble(bubble.x, bubble.y, bubble.color, bubble.radius);
+                        }
+                    }
+                }
+                
+                // 绘制当前发射的泡泡
+                if (gameState.currentBubble && gameState.currentBubble.active) {
+                    drawBubble(
+                        gameState.currentBubble.x, 
+                        gameState.currentBubble.y, 
+                        gameState.currentBubble.color, 
+                        gameState.currentBubble.radius
+                    );
+                    
+                    // 绘制发射方向指示线
+                    drawDirectionLine();
+                }
+                
+                // 绘制发射器
+                drawLauncher();
+            }
+            
+            // 绘制背景网格
+            function drawGrid() {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.lineWidth = 1;
+                
+                // 垂直线
+                for (let x = 0; x <= canvas.width; x += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                
+                // 水平线
+                for (let y = 0; y <= canvas.height; y += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+            }
+            
+            // 绘制单个泡泡
+            function drawBubble(x, y, color, radius) {
+                // 泡泡主体
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                // 泡泡高光效果
+                ctx.beginPath();
+                ctx.arc(x - radius/3, y - radius/3, radius/3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fill();
+                
+                // 泡泡边框
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            
+            // 绘制发射方向指示线
+            function drawDirectionLine() {
+                const angleRad = (gameState.angle * Math.PI) / 180;
+                const lineLength = 100;
+                
+                ctx.beginPath();
+                ctx.moveTo(gameState.currentBubble.x, gameState.currentBubble.y);
+                ctx.lineTo(
+                    gameState.currentBubble.x + Math.cos(angleRad) * lineLength,
+                    gameState.currentBubble.y - Math.sin(angleRad) * lineLength
+                );
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制方向箭头
+                ctx.beginPath();
+                ctx.arc(
+                    gameState.currentBubble.x + Math.cos(angleRad) * lineLength,
+                    gameState.currentBubble.y - Math.sin(angleRad) * lineLength,
+                    5, 0, Math.PI * 2
+                );
+                ctx.fillStyle = '#FF5252';
+                ctx.fill();
+            }
+            
+            // 绘制发射器
+            function drawLauncher() {
+                const launcherWidth = 40;
+                const launcherHeight = 20;
+                const angleRad = (gameState.angle * Math.PI) / 180;
+                
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height - 10);
+                ctx.rotate(-angleRad);
+                
+                // 发射器主体
+                ctx.fillStyle = '#888';
+                ctx.fillRect(-launcherWidth/2, -launcherHeight/2, launcherWidth, launcherHeight);
+                
+                // 发射器装饰
+                ctx.fillStyle = '#555';
+                ctx.fillRect(-launcherWidth/2, -launcherHeight/2, launcherWidth, launcherHeight/3);
+                
+                ctx.restore();
+                
+                // 发射器底座
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height - 10, 25, 0, Math.PI * 2);
+                ctx.fillStyle = '#666';
+                ctx.fill();
+            }
+            
+            // 发射泡泡
+            function fireBubble() {
+                if (gameState.isFiring || gameState.gameOver) return;
+                
+                gameState.isFiring = true;
+                gameState.bubblesLeft--;
+                
+                const angleRad = (gameState.angle * Math.PI) / 180;
+                gameState.currentBubble.dx = Math.cos(angleRad) * config.bubbleSpeed;
+                gameState.currentBubble.dy = -Math.sin(angleRad) * config.bubbleSpeed;
+                
+                updateUI();
+            }
+            
+            // 更新泡泡位置
+            function updateBubblePosition() {
+                if (!gameState.currentBubble || !gameState.currentBubble.active) return;
+                
+                // 更新位置
+                gameState.currentBubble.x += gameState.currentBubble.dx;
+                gameState.currentBubble.y += gameState.currentBubble.dy;
+                
+                // 边界碰撞检测
+                if (gameState.currentBubble.x - gameState.currentBubble.radius <= 0 || 
+                    gameState.currentBubble.x + gameState.currentBubble.radius >= canvas.width) {
+                    gameState.currentBubble.dx *= -1; // 反弹
+                }
+                
+                // 顶部碰撞检测
+                if (gameState.currentBubble.y - gameState.currentBubble.radius <= 0) {
+                    gameState.currentBubble.dy *= -1; // 反弹
+                }
+                
+                // 检测是否与网格中的泡泡碰撞
+                const collision = checkCollisionWithGrid();
+                if (collision) {
+                    // 将泡泡固定到网格
+                    snapBubbleToGrid(collision.row, collision.col);
+                    
+                    // 检查是否有匹配的泡泡
+                    const matches = findMatchingBubbles(collision.row, collision.col, gameState.currentBubble.color);
+                    
+                    if (matches.length >= 3) {
+                        // 移除匹配的泡泡
+                        removeBubbles(matches);
+                        
+                        // 检查是否有悬空的泡泡
+                        const floatingBubbles = findFloatingBubbles();
+                        if (floatingBubbles.length > 0) {
+                            // 移除悬空的泡泡
+                            removeBubbles(floatingBubbles);
+                        }
+                    }
+                    
+                    // 创建新的泡泡
+                    gameState.currentBubble.active = false;
+                    setTimeout(() => {
+                        createNewBubble();
+                        gameState.isFiring = false;
+                        
+                        // 检查游戏是否结束
+                        checkGameOver();
+                    }, 300);
+                }
+                
+                // 检查是否触底
+                if (gameState.currentBubble.y + gameState.currentBubble.radius >= canvas.height) {
+                    gameOver();
+                }
+            }
+            
+            // 检测与网格泡泡的碰撞
+            function checkCollisionWithGrid() {
+                for (let row = 0; row < config.rows; row++) {
+                    for (let col = 0; col < config.cols; col++) {
+                        const bubble = gameState.bubbleGrid[row][col];
+                        if (bubble) {
+                            const dx = gameState.currentBubble.x - bubble.x;
+                            const dy = gameState.currentBubble.y - bubble.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < gameState.currentBubble.radius + bubble.radius) {
+                                return {row, col};
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            }
+            
+            // 将泡泡固定到网格
+            function snapBubbleToGrid(row, col) {
+                // 找到最近的空格
+                let targetRow = row;
+                let targetCol = col;
+                
+                // 简单算法：寻找最近的空位置
+                let minDistance = Infinity;
+                let targetPosition = null;
+                
+                for (let r = 0; r < config.rows; r++) {
+                    for (let c = 0; c < config.cols; c++) {
+                        if (!gameState.bubbleGrid[r][c]) {
+                            const bubbleX = c * (config.bubbleRadius * 2 + 5) + config.bubbleRadius + 5;
+                            const bubbleY = r * (config.bubbleRadius * 2 + 5) + config.startY;
+                            const dx = gameState.currentBubble.x - bubbleX;
+                            const dy = gameState.currentBubble.y - bubbleY;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                targetPosition = {row: r, col: c};
+                            }
+                        }
+                    }
+                }
+                
+                if (targetPosition) {
+                    targetRow = targetPosition.row;
+                    targetCol = targetPosition.col;
+                    
+                    gameState.bubbleGrid[targetRow][targetCol] = {
+                        x: targetCol * (config.bubbleRadius * 2 + 5) + config.bubbleRadius + 5,
+                        y: targetRow * (config.bubbleRadius * 2 + 5) + config.startY,
+                        color: gameState.currentBubble.color,
+                        radius: config.bubbleRadius,
+                        row: targetRow,
+                        col: targetCol
+                    };
+                }
+            }
+            
+            // 寻找匹配的泡泡
+            function findMatchingBubbles(row, col, color) {
+                const visited = new Set();
+                const matches = [];
+                const stack = [{row, col}];
+                
+                while (stack.length > 0) {
+                    const {row: r, col: c} = stack.pop();
+                    const key = `${r},${c}`;
+                    
+                    if (visited.has(key)) continue;
+                    visited.add(key);
+                    
+                    const bubble = gameState.bubbleGrid[r][c];
+                    if (bubble && bubble.color === color) {
+                        matches.push(bubble);
+                        
+                        // 检查相邻的泡泡
+                        const neighbors = [
+                            {row: r-1, col: c}, // 上
+                            {row: r+1, col: c}, // 下
+                            {row: r, col: c-1}, // 左
+                            {row: r, col: c+1}, // 右
+                            {row: r-1, col: c + (r % 2 === 0 ? -1 : 1)}, // 左上或右上
+                            {row: r-1, col: c + (r % 2 === 0 ? 0 : 1)}  // 右上或右下
+                        ];
+                        
+                        for (const neighbor of neighbors) {
+                            if (neighbor.row >= 0 && neighbor.row < config.rows && 
+                                neighbor.col >= 0 && neighbor.col < config.cols) {
+                                stack.push(neighbor);
+                            }
+                        }
+                    }
+                }
+                
+                return matches;
+            }
+            
+            // 移除泡泡
+            function removeBubbles(bubbles) {
+                // 计算得分
+                const points = bubbles.length * 10 * gameState.level;
+                gameState.score += points;
+                
+                // 如果连续消除大量泡泡，给予额外奖励
+                if (bubbles.length >= 5) {
+                    const bonus = Math.floor(bubbles.length / 5) * 50;
+                    gameState.score += bonus;
+                }
+                
+                // 从网格中移除泡泡
+                for (const bubble of bubbles) {
+                    gameState.bubbleGrid[bubble.row][bubble.col] = null;
+                }
+                
+                // 检查是否需要升级
+                const bubblesRemoved = Math.floor(gameState.score / 250);
+                if (bubblesRemoved >= gameState.level) {
+                    gameState.level = bubblesRemoved + 1;
+                }
+                
+                updateUI();
+            }
+            
+            // 寻找悬空的泡泡
+            function findFloatingBubbles() {
+                const visited = new Set();
+                const connected = new Set();
+                const floating = [];
+                
+                // 从顶部行的所有泡泡开始，找到所有连接到顶部的泡泡
+                for (let col = 0; col < config.cols; col++) {
+                    if (gameState.bubbleGrid[0][col]) {
+                        const stack = [{row: 0, col}];
+                        
+                        while (stack.length > 0) {
+                            const {row, col} = stack.pop();
+                            const key = `${row},${col}`;
+                            
+                            if (visited.has(key)) continue;
+                            visited.add(key);
+                            connected.add(key);
+                            
+                            const neighbors = [
+                                {row: row-1, col: col},
+                                {row: row+1, col: col},
+                                {row: row, col: col-1},
+                                {row: row, col: col+1}
+                            ];
+                            
+                            for (const neighbor of neighbors) {
+                                if (neighbor.row >= 0 && neighbor.row < config.rows && 
+                                    neighbor.col >= 0 && neighbor.col < config.cols &&
+                                    gameState.bubbleGrid[neighbor.row][neighbor.col]) {
+                                    stack.push(neighbor);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 找到所有未连接到顶部的泡泡
+                for (let row = 0; row < config.rows; row++) {
+                    for (let col = 0; col < config.cols; col++) {
+                        if (gameState.bubbleGrid[row][col]) {
+                            const key = `${row},${col}`;
+                            if (!connected.has(key)) {
+                                floating.push(gameState.bubbleGrid[row][col]);
+                            }
+                        }
+                    }
+                }
+                
+                return floating;
+            }
+            
+            // 检查游戏是否结束
+            function checkGameOver() {
+                // 检查泡泡是否触顶
+                for (let col = 0; col < config.cols; col++) {
+                    if (gameState.bubbleGrid[config.rows - 1][col]) {
+                        gameOver();
+                        return;
+                    }
+                }
+                
+                // 检查是否还有剩余泡泡
+                if (gameState.bubblesLeft <= 0) {
+                    let hasBubbles = false;
+                    for (let row = 0; row < config.rows; row++) {
+                        for (let col = 0; col < config.cols; col++) {
+                            if (gameState.bubbleGrid[row][col]) {
+                                hasBubbles = true;
+                                break;
+                            }
+                        }
+                        if (hasBubbles) break;
+                    }
+                    
+                    if (!hasBubbles) {
+                        gameOver();
+                    }
+                }
+            }
+            
+            // 游戏结束
+            function gameOver() {
+                gameState.gameOver = true;
+                finalScoreElement.textContent = gameState.score;
+                gameOverScreen.style.display = 'flex';
+            }
+            
+            // 游戏主循环
+            function gameLoop() {
+                if (!gameState.gameOver) {
+                    updateBubblePosition();
+                    drawGame();
+                }
+                requestAnimationFrame(gameLoop);
+            }
+            
+            // 事件监听
+            angleSlider.addEventListener('input', function() {
+                gameState.angle = parseInt(this.value);
+                angleDisplay.textContent = `${gameState.angle}°`;
+                drawGame();
+            });
+            
+            fireButton.addEventListener('click', fireBubble);
+            
+            newGameButton.addEventListener('click', initGame);
+            
+            restartButton.addEventListener('click', initGame);
+            
+            // 键盘控制
+            document.addEventListener('keydown', function(e) {
+                if (gameState.gameOver) return;
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        gameState.angle = Math.min(179, gameState.angle + 5);
+                        updateUI();
+                        drawGame();
+                        break;
+                    case 'ArrowRight':
+                        gameState.angle = Math.max(1, gameState.angle - 5);
+                        updateUI();
+                        drawGame();
+                        break;
+                    case ' ':
+                    case 'Enter':
+                        fireBubble();
+                        break;
+                }
+            });
+            
+            // 初始化并启动游戏
+            initGame();
+            gameLoop();
+        });
+    </script>
+</body>
+</html>

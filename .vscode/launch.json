@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open bouble.html",
+            "file": "c:\\Users\\sukis\\Desktop\\GitHub\\Test\\bouble.html"
+        }
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open intex.html",
+            "file": "c:\\Users\\sukis\\Desktop\\GitHub\\Test\\intex.html"
+        }
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 2048.html",
+            "file": "c:\\Users\\sukis\\Desktop\\GitHub\\Test\\2048.html"
+        }
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open gmae.html",
+            "file": "c:\\Users\\sukis\\Desktop\\GitHub\\Test\\gmae.html"
+        }
+    ]
+}
