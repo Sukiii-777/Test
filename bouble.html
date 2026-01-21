@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>泡泡龙游戏</title>
+    <title>泡泡龙游戏 - 鼠标控制</title>
     <style>
         * {
             margin: 0;
@@ -95,6 +95,31 @@
             background: rgba(0, 10, 30, 0.9);
             border-radius: 10px;
             border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: crosshair;
+        }
+        
+        .mouse-control-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .mouse-control-info h3 {
+            color: #feb47b;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .mouse-control-info p {
+            color: #a3c4f3;
+            text-align: center;
+            line-height: 1.5;
         }
         
         .controls {
@@ -105,46 +130,27 @@
             margin-top: 15px;
         }
         
-        .angle-control {
+        .angle-display-container {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
-            width: 100%;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px 20px;
+            border-radius: 10px;
         }
         
         .angle-label {
             margin-right: 15px;
             color: #a3c4f3;
             font-size: 1.1rem;
-            min-width: 80px;
-        }
-        
-        .angle-slider {
-            flex-grow: 1;
-            height: 10px;
-            -webkit-appearance: none;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
-            border-radius: 5px;
-            outline: none;
-        }
-        
-        .angle-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #fff;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         
         .angle-display {
-            margin-left: 15px;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #feb47b;
-            min-width: 40px;
+            min-width: 50px;
+            text-align: center;
         }
         
         .buttons {
@@ -270,6 +276,30 @@
             border-radius: 50%;
         }
         
+        .mouse-pointer {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+            display: none;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .mouse-pointer::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #ff7e5f;
+            border-radius: 50%;
+        }
+        
         .footer {
             margin-top: 30px;
             text-align: center;
@@ -299,13 +329,23 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>泡泡龙游戏</h1>
-        <p class="subtitle">发射泡泡，匹配三个或更多相同颜色的泡泡来消除它们！</p>
+        <h1>泡泡龙游戏 - 鼠标控制</h1>
+        <p class="subtitle">用鼠标瞄准，点击发射泡泡！匹配三个或更多相同颜色的泡泡来消除它们！</p>
     </div>
     
     <div class="game-container">
@@ -328,6 +368,7 @@
         
         <div class="canvas-container">
             <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div class="mouse-pointer" id="mousePointer"></div>
             
             <div class="next-bubble">
                 <div class="next-bubble-label">下一个</div>
@@ -341,15 +382,20 @@
             </div>
         </div>
         
+        <div class="mouse-control-info">
+            <h3>鼠标控制说明</h3>
+            <p>移动鼠标瞄准，点击画布任意位置发射泡泡！瞄准线会实时显示发射方向。</p>
+            <p>瞄准时，鼠标位置距离发射点越远，发射力量越大。</p>
+        </div>
+        
         <div class="controls">
-            <div class="angle-control">
+            <div class="angle-display-container">
                 <div class="angle-label">发射角度:</div>
-                <input type="range" min="1" max="179" value="90" class="angle-slider" id="angleSlider">
-                <div class="angle-display">90°</div>
+                <div class="angle-display" id="angleDisplay">90°</div>
             </div>
             
             <div class="buttons">
-                <button class="btn btn-fire" id="fireButton">发射泡泡</button>
+                <button class="btn btn-fire" id="fireButton">鼠标点击发射</button>
                 <button class="btn btn-restart" id="newGameButton">新游戏</button>
             </div>
         </div>
@@ -358,7 +404,8 @@
     <div class="instructions">
         <h2>游戏说明</h2>
         <ul>
-            <li>使用滑块调整发射角度（1°-179°），然后点击"发射泡泡"按钮</li>
+            <li>使用鼠标瞄准，点击画布任意位置发射泡泡</li>
+            <li>瞄准线会实时显示发射方向，鼠标距离发射点越远力量越大</li>
             <li>当三个或更多相同颜色的泡泡连接在一起时，它们会被消除</li>
             <li>每次成功消除泡泡会获得分数，连续消除会获得额外分数</li>
             <li>每消除25个泡泡，关卡会提升，泡泡下降速度会增加</li>
@@ -368,7 +415,7 @@
     </div>
     
     <div class="footer">
-        <p>泡泡龙游戏 - 使用HTML5 Canvas和JavaScript制作</p>
+        <p>泡泡龙游戏 - 鼠标控制版 - 使用HTML5 Canvas和JavaScript制作</p>
     </div>
 
     <script>
@@ -379,14 +426,14 @@
             const scoreElement = document.querySelector('.score-value');
             const levelElement = document.querySelector('.level-value');
             const bubblesLeftElement = document.querySelector('.bubbles-left-value');
-            const angleSlider = document.getElementById('angleSlider');
-            const angleDisplay = document.querySelector('.angle-display');
+            const angleDisplay = document.getElementById('angleDisplay');
             const fireButton = document.getElementById('fireButton');
             const newGameButton = document.getElementById('newGameButton');
             const restartButton = document.getElementById('restartButton');
             const gameOverScreen = document.getElementById('gameOverScreen');
             const finalScoreElement = document.getElementById('finalScore');
             const nextBubblePreview = document.getElementById('nextBubble');
+            const mousePointer = document.getElementById('mousePointer');
             
             // 游戏配置
             const config = {
@@ -409,7 +456,10 @@
                 currentBubble: null,
                 nextBubble: null,
                 angle: 90,
-                bubbleGrid: []
+                bubbleGrid: [],
+                mouseX: canvas.width / 2,
+                mouseY: canvas.height - 100,
+                showMousePointer: false
             };
             
             // 初始化游戏
@@ -423,6 +473,9 @@
                 gameState.currentBubble = null;
                 gameState.bubbleGrid = [];
                 gameState.angle = 90;
+                gameState.mouseX = canvas.width / 2;
+                gameState.mouseY = canvas.height - 100;
+                gameState.showMousePointer = false;
                 
                 // 初始化泡泡网格
                 for (let row = 0; row < config.rows; row++) {
@@ -452,6 +505,7 @@
                 // 更新UI
                 updateUI();
                 gameOverScreen.style.display = 'none';
+                mousePointer.style.display = 'none';
                 
                 // 绘制游戏
                 drawGame();
@@ -493,8 +547,50 @@
                 scoreElement.textContent = gameState.score;
                 levelElement.textContent = gameState.level;
                 bubblesLeftElement.textContent = gameState.bubblesLeft;
-                angleSlider.value = gameState.angle;
-                angleDisplay.textContent = `${gameState.angle}°`;
+                
+                // 更新按钮文本
+                if (gameState.isFiring) {
+                    fireButton.textContent = '发射中...';
+                } else {
+                    fireButton.textContent = '鼠标点击发射';
+                }
+            }
+            
+            // 计算鼠标位置对应的角度
+            function calculateAngle(mouseX, mouseY) {
+                const dx = mouseX - gameState.currentBubble.x;
+                const dy = gameState.currentBubble.y - mouseY; // Y轴反向
+                
+                // 计算角度（弧度）
+                let angleRad = Math.atan2(dy, dx);
+                
+                // 限制角度在1°到179°之间（避免水平发射）
+                let angleDeg = angleRad * (180 / Math.PI);
+                
+                // 确保角度在有效范围内
+                if (angleDeg < 1) angleDeg = 1;
+                if (angleDeg > 179) angleDeg = 179;
+                
+                // 避免向下发射
+                if (dy < 0) {
+                    // 如果鼠标在泡泡下方，强制向上发射
+                    angleDeg = 90;
+                }
+                
+                return angleDeg;
+            }
+            
+            // 计算发射力量（基于鼠标距离）
+            function calculatePower(mouseX, mouseY) {
+                const dx = mouseX - gameState.currentBubble.x;
+                const dy = gameState.currentBubble.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // 最大距离为200像素，超过则按最大力量计算
+                const maxDistance = 200;
+                const power = Math.min(distance / maxDistance, 1);
+                
+                return power;
             }
             
             // 绘制游戏
@@ -524,12 +620,17 @@
                         gameState.currentBubble.radius
                     );
                     
-                    // 绘制发射方向指示线
+                    // 绘制发射方向指示线（基于鼠标位置）
                     drawDirectionLine();
                 }
                 
                 // 绘制发射器
                 drawLauncher();
+                
+                // 绘制鼠标指针位置
+                if (gameState.showMousePointer && !gameState.isFiring) {
+                    drawMouseTarget();
+                }
             }
             
             // 绘制背景网格
@@ -578,35 +679,72 @@
             
             // 绘制发射方向指示线
             function drawDirectionLine() {
-                const angleRad = (gameState.angle * Math.PI) / 180;
-                const lineLength = 100;
+                // 计算角度
+                const angleDeg = calculateAngle(gameState.mouseX, gameState.mouseY);
+                const angleRad = angleDeg * (Math.PI / 180);
                 
+                // 计算力量
+                const power = calculatePower(gameState.mouseX, gameState.mouseY);
+                const lineLength = 50 + power * 100; // 长度随力量增加
+                
+                // 绘制瞄准线
                 ctx.beginPath();
                 ctx.moveTo(gameState.currentBubble.x, gameState.currentBubble.y);
                 ctx.lineTo(
                     gameState.currentBubble.x + Math.cos(angleRad) * lineLength,
                     gameState.currentBubble.y - Math.sin(angleRad) * lineLength
                 );
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.lineWidth = 2;
+                
+                // 线颜色随力量变化
+                const intensity = Math.floor(power * 255);
+                ctx.strokeStyle = `rgb(255, ${255 - intensity}, ${100})`;
+                ctx.lineWidth = 3;
                 ctx.stroke();
                 
-                // 绘制方向箭头
+                // 绘制力量指示点
                 ctx.beginPath();
                 ctx.arc(
                     gameState.currentBubble.x + Math.cos(angleRad) * lineLength,
                     gameState.currentBubble.y - Math.sin(angleRad) * lineLength,
-                    5, 0, Math.PI * 2
+                    5 + power * 5, // 大小随力量增加
+                    0,
+                    Math.PI * 2
                 );
-                ctx.fillStyle = '#FF5252';
+                ctx.fillStyle = `rgb(255, ${150 - intensity}, ${50})`;
                 ctx.fill();
+                
+                // 更新角度显示
+                angleDisplay.textContent = `${Math.round(angleDeg)}°`;
+            }
+            
+            // 绘制鼠标目标
+            function drawMouseTarget() {
+                // 绘制目标圆
+                ctx.beginPath();
+                ctx.arc(gameState.mouseX, gameState.mouseY, 10, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制十字准星
+                ctx.beginPath();
+                ctx.moveTo(gameState.mouseX - 15, gameState.mouseY);
+                ctx.lineTo(gameState.mouseX - 5, gameState.mouseY);
+                ctx.moveTo(gameState.mouseX + 5, gameState.mouseY);
+                ctx.lineTo(gameState.mouseX + 15, gameState.mouseY);
+                ctx.moveTo(gameState.mouseX, gameState.mouseY - 15);
+                ctx.lineTo(gameState.mouseX, gameState.mouseY - 5);
+                ctx.moveTo(gameState.mouseX, gameState.mouseY + 5);
+                ctx.lineTo(gameState.mouseX, gameState.mouseY + 15);
+                ctx.stroke();
             }
             
             // 绘制发射器
             function drawLauncher() {
                 const launcherWidth = 40;
                 const launcherHeight = 20;
-                const angleRad = (gameState.angle * Math.PI) / 180;
+                const angleDeg = calculateAngle(gameState.mouseX, gameState.mouseY);
+                const angleRad = angleDeg * (Math.PI / 180);
                 
                 ctx.save();
                 ctx.translate(canvas.width / 2, canvas.height - 10);
@@ -635,10 +773,18 @@
                 
                 gameState.isFiring = true;
                 gameState.bubblesLeft--;
+                gameState.showMousePointer = false;
+                mousePointer.style.display = 'none';
                 
-                const angleRad = (gameState.angle * Math.PI) / 180;
-                gameState.currentBubble.dx = Math.cos(angleRad) * config.bubbleSpeed;
-                gameState.currentBubble.dy = -Math.sin(angleRad) * config.bubbleSpeed;
+                // 计算角度和力量
+                const angleDeg = calculateAngle(gameState.mouseX, gameState.mouseY);
+                const angleRad = angleDeg * (Math.PI / 180);
+                const power = calculatePower(gameState.mouseX, gameState.mouseY);
+                
+                // 设置速度（力量影响速度）
+                const speed = config.bubbleSpeed * (0.5 + power * 0.5);
+                gameState.currentBubble.dx = Math.cos(angleRad) * speed;
+                gameState.currentBubble.dy = -Math.sin(angleRad) * speed;
                 
                 updateUI();
             }
@@ -688,6 +834,7 @@
                     setTimeout(() => {
                         createNewBubble();
                         gameState.isFiring = false;
+                        gameState.showMousePointer = true;
                         
                         // 检查游戏是否结束
                         checkGameOver();
@@ -911,6 +1058,8 @@
             // 游戏结束
             function gameOver() {
                 gameState.gameOver = true;
+                gameState.showMousePointer = false;
+                mousePointer.style.display = 'none';
                 finalScoreElement.textContent = gameState.score;
                 gameOverScreen.style.display = 'flex';
             }
@@ -920,41 +1069,77 @@
                 if (!gameState.gameOver) {
                     updateBubblePosition();
                     drawGame();
+                    
+                    // 更新鼠标指针位置
+                    if (gameState.showMousePointer) {
+                        mousePointer.style.left = (gameState.mouseX - 10) + 'px';
+                        mousePointer.style.top = (gameState.mouseY - 10) + 'px';
+                        mousePointer.style.display = 'block';
+                    }
                 }
                 requestAnimationFrame(gameLoop);
             }
             
-            // 事件监听
-            angleSlider.addEventListener('input', function() {
-                gameState.angle = parseInt(this.value);
-                angleDisplay.textContent = `${gameState.angle}°`;
-                drawGame();
+            // 鼠标事件监听
+            canvas.addEventListener('mousemove', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                gameState.mouseX = e.clientX - rect.left;
+                gameState.mouseY = e.clientY - rect.top;
+                
+                // 只有在非发射状态才显示鼠标指针
+                if (!gameState.isFiring && !gameState.gameOver) {
+                    gameState.showMousePointer = true;
+                }
             });
             
-            fireButton.addEventListener('click', fireBubble);
+            canvas.addEventListener('mouseenter', function() {
+                if (!gameState.isFiring && !gameState.gameOver) {
+                    gameState.showMousePointer = true;
+                }
+            });
+            
+            canvas.addEventListener('mouseleave', function() {
+                gameState.showMousePointer = false;
+                mousePointer.style.display = 'none';
+            });
+            
+            canvas.addEventListener('click', function(e) {
+                if (gameState.isFiring || gameState.gameOver) return;
+                
+                // 更新鼠标位置
+                const rect = canvas.getBoundingClientRect();
+                gameState.mouseX = e.clientX - rect.left;
+                gameState.mouseY = e.clientY - rect.top;
+                
+                fireBubble();
+            });
+            
+            fireButton.addEventListener('click', function() {
+                if (gameState.isFiring || gameState.gameOver) return;
+                fireBubble();
+            });
             
             newGameButton.addEventListener('click', initGame);
-            
             restartButton.addEventListener('click', initGame);
             
-            // 键盘控制
+            // 键盘控制（备用）
             document.addEventListener('keydown', function(e) {
                 if (gameState.gameOver) return;
                 
                 switch(e.key) {
-                    case 'ArrowLeft':
-                        gameState.angle = Math.min(179, gameState.angle + 5);
-                        updateUI();
-                        drawGame();
-                        break;
-                    case 'ArrowRight':
-                        gameState.angle = Math.max(1, gameState.angle - 5);
-                        updateUI();
-                        drawGame();
-                        break;
                     case ' ':
                     case 'Enter':
-                        fireBubble();
+                        e.preventDefault();
+                        if (!gameState.isFiring) {
+                            fireBubble();
+                        }
+                        break;
+                    case 'r':
+                    case 'R':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            initGame();
+                        }
                         break;
                 }
             });

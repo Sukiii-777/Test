@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048游戏</title>
+    <title>2048游戏 - 修复版</title>
     <style>
         * {
             margin: 0;
@@ -108,6 +108,17 @@
         .game-board-container {
             position: relative;
             margin-bottom: 25px;
+            width: 500px;
+            height: 500px;
+        }
+        
+        @media (max-width: 600px) {
+            .game-board-container {
+                width: 90vw;
+                height: 90vw;
+                max-width: 400px;
+                max-height: 400px;
+            }
         }
         
         #gameBoard {
@@ -115,21 +126,13 @@
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
             gap: 15px;
-            width: 500px;
-            height: 500px;
+            width: 100%;
+            height: 100%;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        @media (max-width: 600px) {
-            #gameBoard {
-                width: 90vw;
-                height: 90vw;
-                max-width: 400px;
-                max-height: 400px;
-            }
+            position: relative;
         }
         
         .cell {
@@ -141,6 +144,7 @@
             font-size: 2.5rem;
             font-weight: bold;
             transition: all 0.2s ease;
+            position: relative;
         }
         
         .tile {
@@ -752,7 +756,7 @@
                 }
             }
             
-            // 创建方块元素
+            // 创建方块元素 - 已修复偏移问题
             function createTileElement(row, col, value) {
                 const tile = document.createElement('div');
                 tile.className = `tile tile-${value}`;
@@ -760,20 +764,31 @@
                 tile.dataset.row = row;
                 tile.dataset.col = col;
                 
-                // 设置位置
-                const cellSize = (500 - 75) / 4; // 500px - padding and gap
-                const x = col * (cellSize + 15) + 15;
-                const y = row * (cellSize + 15) + 15;
+                // 获取游戏板尺寸
+                const boardWidth = gameBoard.offsetWidth;
+                const boardHeight = gameBoard.offsetHeight;
                 
-                tile.style.width = `${cellSize}px`;
-                tile.style.height = `${cellSize}px`;
-                tile.style.transform = `translate(${x}px, ${y}px)`;
+                // 计算单元格的宽度和高度（考虑间隙）
+                const cellWidth = (boardWidth - 15 * (GRID_SIZE + 1)) / GRID_SIZE;
+                const cellHeight = (boardHeight - 15 * (GRID_SIZE + 1)) / GRID_SIZE;
+                
+                // 计算方块应该放置的位置 - 修复偏移的关键
+                // 每个方块应该在其单元格的中心位置
+                const x = col * (cellWidth + 15) + 15;
+                const y = row * (cellHeight + 15) + 15;
+                
+                tile.style.width = `${cellWidth}px`;
+                tile.style.height = `${cellHeight}px`;
+                tile.style.left = `${x}px`;
+                tile.style.top = `${y}px`;
                 
                 // 超大数字调整字体大小
                 if (value >= 1000) {
                     tile.style.fontSize = '1.6rem';
                 } else if (value >= 100) {
                     tile.style.fontSize = '1.8rem';
+                } else if (value >= 10000) {
+                    tile.style.fontSize = '1.4rem';
                 }
                 
                 gameBoard.appendChild(tile);
@@ -890,9 +905,7 @@
                     updateUI();
                     
                     // 重新绘制游戏板
-                    setTimeout(() => {
-                        drawBoard();
-                    }, 150);
+                    drawBoard();
                     
                     return true;
                 }
@@ -1204,6 +1217,11 @@
                 touchStartY = 0;
                 e.preventDefault();
             }, { passive: false });
+            
+            // 窗口大小改变时重新绘制游戏板
+            window.addEventListener('resize', function() {
+                drawBoard();
+            });
             
             // 初始化游戏
             initGame();
