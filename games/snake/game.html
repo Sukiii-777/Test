@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="css/game.css">
+    <script src="../../assets/js/utils.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>贪吃蛇游戏</h1>
+        <p class="subtitle">控制蛇吃食物，避免撞墙或撞到自己！</p>
+    </div>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-container">
+                <div class="score-label">得分</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            
+            <div class="game-info">
+                <div class="game-title">贪吃蛇</div>
+                <div class="game-subtitle">长度: <span id="snakeLength">1</span></div>
+            </div>
+            
+            <div class="best-container">
+                <div class="best-label">最高分</div>
+                <div class="best-value" id="bestScore">0</div>
+            </div>
+        </div>
+        
+        <div class="game-stats">
+            <div class="stat">
+                <div class="stat-value" id="level">1</div>
+                <div class="stat-label">关卡</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="speed">1</div>
+                <div class="stat-label">速度</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="foodEaten">0</div>
+                <div class="stat-label">食物数量</div>
+            </div>
+        </div>
+        
+        <div class="game-board-container">
+            <canvas id="gameCanvas" width="600" height="400"></canvas>
+            
+            <div class="game-over-screen" id="gameOverScreen">
+                <h2>游戏结束</h2>
+                <div class="final-score">最终得分: <span id="finalScore">0</span></div>
+                <button class="btn btn-new-game" id="restartButton">重新开始</button>
+            </div>
+            
+            <div class="win-screen" id="winScreen">
+                <h2>恭喜！</h2>
+                <div class="win-message">你成功通过了第<span id="winLevel">1</span>关！</div>
+                <button class="btn btn-new-game" id="nextLevelButton">下一关</button>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <div class="controls-top">
+                <button class="btn btn-new-game" id="newGameButton">
+                    <span class="icon">🔄</span> 新游戏
+                </button>
+                <button class="btn btn-undo" id="pauseButton">
+                    <span class="icon">⏸️</span> 暂停
+                </button>
+                <button class="btn btn-hint" id="hintButton">
+                    <span class="icon">💡</span> 提示
+                </button>
+            </div>
+            
+            <div class="keyboard-controls">
+                <h3>键盘控制</h3>
+                <div class="key-row">
+                    <div class="key">W / ↑</div>
+                </div>
+                <div class="key-row">
+                    <div class="key">A / ←</div>
+                    <div class="key">S / ↓</div>
+                    <div class="key">D / →</div>
+                </div>
+                <div class="key-row">
+                    <div class="key key-space">空格键(暂停)</div>
+                    <div class="key">P</div>
+                </div>
+            </div>
+            
+            <div class="mobile-controls">
+                <button class="mobile-btn mobile-up" id="upBtn">↑</button>
+                <button class="mobile-btn mobile-left" id="leftBtn">←</button>
+                <button class="mobile-btn mobile-right" id="rightBtn">→</button>
+                <button class="mobile-btn mobile-down" id="downBtn">↓</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>游戏说明</h2>
+            <div class="instructions-content">
+                <div class="instruction-card">
+                    <h3><span class="icon">🎮</span> 如何玩</h3>
+                    <p>使用键盘方向键 (W, A, S, D 或 ↑, ←, ↓, →) 控制蛇的移动方向。</p>
+                    <p>蛇会自动向前移动，你需要控制它转向来吃食物。</p>
+                    <p>每吃一个食物，蛇的长度增加，得分也增加。</p>
+                </div>
+                
+                <div class="instruction-card">
+                    <h3><span class="icon">⚠️</span> 游戏规则</h3>
+                    <p>避免蛇头撞到墙壁或自己的身体。</p>
+                    <p>每吃10个食物，关卡提升，蛇的移动速度加快。</p>
+                    <p>游戏目标是尽可能获得高分并通关更多关卡。</p>
+                </div>
+                
+                <div class="instruction-card">
+                    <h3><span class="icon">💡</span> 游戏技巧</h3>
+                    <p>尽量让蛇在场地中央活动，避免靠近边缘。</p>
+                    <p>提前规划路线，避免陷入死角。</p>
+                    <p>当蛇变长时，注意不要让自己困住。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>贪吃蛇游戏 - 使用HTML5 Canvas和JavaScript制作 | 控制蛇吃食物，挑战高分！</p>
+    </div>
+    
+    <script src="js/game.js"></script>
+</body>
+</html>

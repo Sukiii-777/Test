@@ -1,0 +1,241 @@
+/* 共享样式 - 游戏项目通用样式 */
+
+/* 基础重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Microsoft YaHei', 'Arial', sans-serif;
+}
+
+/* 基础布局 */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    padding: 20px;
+}
+
+/* 标题样式 */
+h1, h2, h3 {
+    color: #f7b731;
+    text-shadow: 0 2px 10px rgba(247, 183, 49, 0.3);
+}
+
+h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+h2 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+/* 容器样式 */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+}
+
+/* 按钮样式 */
+.btn {
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+}
+
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-new-game {
+    background: linear-gradient(to right, #4cd137, #44bd32);
+    color: white;
+}
+
+.btn-undo {
+    background: linear-gradient(to right, #00a8ff, #0097e6);
+    color: white;
+}
+
+.btn-hint {
+    background: linear-gradient(to right, #9b59b6, #8e44ad);
+    color: white;
+}
+
+.btn-restart {
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    color: white;
+}
+
+/* 分数和状态容器 */
+.score-container, .best-container, .level-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 25px;
+    border-radius: 15px;
+    min-width: 140px;
+    backdrop-filter: blur(5px);
+}
+
+.score-label, .best-label, .level-label {
+    font-size: 1rem;
+    color: #a5b1c2;
+    margin-bottom: 8px;
+}
+
+.score-value, .best-value, .level-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #f7b731;
+}
+
+/* 游戏状态显示 */
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f7b731;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #a5b1c2;
+    margin-top: 5px;
+}
+
+/* 游戏结束/胜利屏幕 */
+.game-over-screen, .win-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    z-index: 20;
+    display: none;
+}
+
+.game-over-screen h2 {
+    font-size: 3rem;
+    color: #f7b731;
+    margin-bottom: 20px;
+}
+
+.win-screen h2 {
+    font-size: 3rem;
+    color: #f7b731;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.final-score {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #4cd137;
+}
+
+.win-message {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #4cd137;
+    text-align: center;
+    max-width: 80%;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .game-container {
+        padding: 15px;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        min-width: 120px;
+    }
+    
+    .score-container, .best-container, .level-container {
+        min-width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .game-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* 页脚 */
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #a5b1c2;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 800px;
+}

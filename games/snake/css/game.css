@@ -1,0 +1,344 @@
+/* 贪吃蛇游戏专用样式 */
+
+/* 游戏画布容器 */
+.game-board-container {
+    position: relative;
+    margin-bottom: 25px;
+    width: 600px;
+    height: 400px;
+}
+
+#gameCanvas {
+    display: block;
+    background: #0a0a1a;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 游戏网格 */
+.grid-line {
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 1;
+}
+
+/* 蛇的样式 */
+.snake-head {
+    fill: #4cd137;
+    stroke: #2ecc71;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px rgba(76, 209, 55, 0.5));
+}
+
+.snake-body {
+    fill: #44bd32;
+    stroke: #27ae60;
+    stroke-width: 1;
+}
+
+.snake-tail {
+    fill: #3498db;
+    stroke: #2980b9;
+    stroke-width: 2;
+}
+
+/* 食物的样式 */
+.food {
+    fill: #e74c3c;
+    stroke: #c0392b;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.7));
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+/* 特殊食物 */
+.special-food {
+    fill: #9b59b6;
+    stroke: #8e44ad;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px rgba(155, 89, 182, 0.8));
+    animation: rotate 3s infinite linear;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 障碍物 */
+.obstacle {
+    fill: #7f8c8d;
+    stroke: #95a5a6;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px rgba(127, 140, 141, 0.5));
+}
+
+/* 游戏信息显示 */
+.game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.game-title {
+    font-size: 2.5rem;
+    color: #4cd137;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 5px rgba(76, 209, 55, 0.3);
+}
+
+.game-subtitle {
+    color: #a5b1c2;
+    font-size: 1rem;
+}
+
+/* 速度指示器 */
+.speed-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.speed-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #7f8c8d;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+}
+
+.speed-dot.active {
+    background: #4cd137;
+    transform: scale(1.2);
+    box-shadow: 0 0 5px rgba(76, 209, 55, 0.5);
+}
+
+/* 方向指示器 */
+.direction-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.direction-label {
+    color: #a5b1c2;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.direction-arrow {
+    font-size: 2rem;
+    color: #4cd137;
+    transition: all 0.3s ease;
+}
+
+/* 游戏提示 */
+.hint-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #f7b731;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    z-index: 15;
+    display: none;
+    border: 2px solid #f7b731;
+    box-shadow: 0 0 20px rgba(247, 183, 49, 0.3);
+    animation: hintPulse 2s infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* 关卡进度 */
+.level-progress {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.level-progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, #4cd137, #f7b731);
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+/* 移动设备控制按钮 */
+.mobile-controls {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 200px;
+    height: 200px;
+    margin-top: 20px;
+}
+
+.mobile-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 10px;
+    color: #f7b731;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mobile-btn:active {
+    background: rgba(247, 183, 49, 0.3);
+}
+
+.mobile-up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.mobile-left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.mobile-right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.mobile-down {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-board-container {
+        width: 90vw;
+        height: 60vw;
+        max-width: 500px;
+        max-height: 350px;
+    }
+    
+    #gameCanvas {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .score-container, .best-container {
+        min-width: 100%;
+    }
+    
+    .controls-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .keyboard-controls {
+        display: none;
+    }
+    
+    .mobile-controls {
+        display: grid;
+    }
+    
+    .instructions-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-title {
+        font-size: 2rem;
+    }
+    
+    .game-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .score-value, .best-value {
+        font-size: 1.8rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* 游戏状态指示器 */
+.game-state-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 5;
+}
+
+.state-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.state-dot.playing {
+    background: #4cd137;
+    animation: blink 1s infinite;
+}
+
+.state-dot.paused {
+    background: #f7b731;
+}
+
+.state-dot.game-over {
+    background: #e74c3c;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.state-text {
+    color: white;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
