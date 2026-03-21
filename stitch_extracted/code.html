@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3d99f5",
+              "background-light": "#f5f7f8",
+              "background-dark": "#101922",
+              "dreamy-pink": "#fce4ec",
+              "dreamy-blue": "#e3f2fd",
+            },
+            fontFamily: {
+              "display": ["Spline Sans", "Noto Sans TC", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<title>777 遊戲中心</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d141c] dark:text-slate-100 transition-colors duration-300">
+<!-- Top Navigation Bar -->
+<div class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 pb-3 justify-between border-b border-slate-100 dark:border-slate-800">
+<div class="text-primary flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-3xl">videogame_asset</span>
+</div>
+<h2 class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight tracking-tight flex-1 text-center">777 遊戲中心</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex items-center justify-center rounded-full h-10 w-10 bg-primary/10 text-primary transition-colors hover:bg-primary/20">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</div>
+<!-- Promotional Stories / Categories -->
+<div class="flex w-full overflow-x-auto no-scrollbar px-4 py-6">
+<div class="flex flex-row items-start justify-start gap-4">
+<div class="flex flex-col items-center gap-2 w-20">
+<div class="w-16 h-16 bg-gradient-to-tr from-pink-200 to-primary/40 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm" data-alt="Soft pink and blue gradient circle">
+<span class="material-symbols-outlined text-white text-2xl">auto_awesome</span>
+</div>
+<p class="text-[#0d141c] dark:text-slate-300 text-xs font-medium">熱門</p>
+</div>
+<div class="flex flex-col items-center gap-2 w-20">
+<div class="w-16 h-16 bg-gradient-to-tr from-blue-200 to-cyan-300 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm" data-alt="Light blue and cyan gradient circle">
+<span class="material-symbols-outlined text-white text-2xl">new_releases</span>
+</div>
+<p class="text-[#0d141c] dark:text-slate-300 text-xs font-medium">新作</p>
+</div>
+<div class="flex flex-col items-center gap-2 w-20">
+<div class="w-16 h-16 bg-gradient-to-tr from-purple-200 to-pink-300 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm" data-alt="Purple and pink pastel gradient circle">
+<span class="material-symbols-outlined text-white text-2xl">card_giftcard</span>
+</div>
+<p class="text-[#0d141c] dark:text-slate-300 text-xs font-medium">活動</p>
+</div>
+<div class="flex flex-col items-center gap-2 w-20">
+<div class="w-16 h-16 bg-gradient-to-tr from-yellow-100 to-orange-200 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm" data-alt="Yellow and orange soft gradient circle">
+<span class="material-symbols-outlined text-white text-2xl">military_tech</span>
+</div>
+<p class="text-[#0d141c] dark:text-slate-300 text-xs font-medium">排行</p>
+</div>
+<div class="flex flex-col items-center gap-2 w-20">
+<div class="w-16 h-16 bg-gradient-to-tr from-green-100 to-teal-200 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm" data-alt="Green and teal pastel gradient circle">
+<span class="material-symbols-outlined text-white text-2xl">groups</span>
+</div>
+<p class="text-[#0d141c] dark:text-slate-300 text-xs font-medium">社群</p>
+</div>
+</div>
+</div>
+<!-- Featured Section Header -->
+<div class="flex items-center justify-between px-4 pt-4">
+<h2 class="text-[#0d141c] dark:text-white text-2xl font-bold tracking-tight">精選遊戲</h2>
+<span class="text-primary text-sm font-semibold">查看全部</span>
+</div>
+<!-- Game Cards Grid -->
+<div class="grid grid-cols-2 gap-4 p-4 pb-20">
+<!-- Game Card 1 -->
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+<div class="w-full aspect-square bg-cover bg-center" data-alt="Whimsical candy matching game illustration" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDL3WWyNu5h1zrUTQHuON95rTTY-ydCivswmoQghy8rbEolNKF_wWvFkmuuUICIX8zyKnBAwXlL9w_mR6feFwydq6AIhSd_Ps3hB0uhyZ-iz7YzzpLmmF_28BT7Ue2oEvDRNjbyEzK1PEdmosm6NRTH2UglNrQyEhv8IR00NBNAtZ_Dzm2bVGf2zYjncyO_pf7BBPQUiZ5dUI1zs-EKqv_FQZPiOeD3fQHyh-JDr9L5tbK9EEboq1wS-RW1_eElbLv58ug2NRTLtg");'></div>
+<div class="p-3 flex flex-col gap-2">
+<div>
+<p class="text-[#0d141c] dark:text-white text-base font-bold leading-snug">甜點消消樂</p>
+<p class="text-[#49739c] dark:text-slate-400 text-xs">益智休閒</p>
+</div>
+<button class="w-full bg-primary text-white text-sm font-bold py-2 rounded-lg shadow-sm active:scale-95 transition-transform">
+                    開始玩
+                </button>
+</div>
+</div>
+<!-- Game Card 2 -->
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+<div class="w-full aspect-square bg-cover bg-center" data-alt="Dreamy forest adventure game art" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCV7OHEPz97qYZiKxQwRku_DKXPsC7g9CCRF8IngIeRJtQqFb0jMD6l9qJ3WQuTMhiqco0VnIp9rVc9c_r3dNEoDOeajVo3e-x-8EUwAIXTDWCsRuEa-nPfpm0V8d4u3s8bacOvfOyxxtfnsn2QUMOC4qlBTs-DrGlpKmwdtBqNmo3MEiCuuVJQKMN-Afe6iuT7MLvA_H3sgxmrqm09tKP7zyqNix9UOK_hfc4gE03WlEcEqkFJm0-_aC-Zi4zKSQG1xeWGayngzw");'></div>
+<div class="p-3 flex flex-col gap-2">
+<div>
+<p class="text-[#0d141c] dark:text-white text-base font-bold leading-snug">夢幻森林</p>
+<p class="text-[#49739c] dark:text-slate-400 text-xs">冒險探索</p>
+</div>
+<button class="w-full bg-primary text-white text-sm font-bold py-2 rounded-lg shadow-sm active:scale-95 transition-transform">
+                    Start
+                </button>
+</div>
+</div>
+<!-- Game Card 3 -->
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+<div class="w-full aspect-square bg-cover bg-center" data-alt="Cute cat simulator illustration" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBJYSCYxhgr7UtXkilJT7rYEBYHMYbrifwRXDWFlF8NJMr425y0uhKJqMMEnsJx7sIvxSNjkp7p7BCdG9bdnazOfK8W16bdRJGuBHN6pqLjIu_h4rspYz_jlbua0Xq-tgQFbAXVPP-kOj1G3jLLzU7ZctYR1wFe7mpkg9BccTfJlFQAeWlyAJc8TccEk6Hk6bN-7qmVDgJGtuPPC6UKi1PhKUgjufi12aEVG3NZ-ooPN-bjhYYeDJj5bY4CHyNM9wyWJj7hozoOqg");'></div>
+<div class="p-3 flex flex-col gap-2">
+<div>
+<p class="text-[#0d141c] dark:text-white text-base font-bold leading-snug">喵喵大冒險</p>
+<p class="text-[#49739c] dark:text-slate-400 text-xs">萌寵模擬</p>
+</div>
+<button class="w-full bg-primary text-white text-sm font-bold py-2 rounded-lg shadow-sm active:scale-95 transition-transform">
+                    Play
+                </button>
+</div>
+</div>
+<!-- Game Card 4 -->
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+<div class="w-full aspect-square bg-cover bg-center" data-alt="Star block puzzle game illustration" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrUNPH1PHYK-GL7wmIcbhikRoFjV4FDm6wjNq8ntcn_nmnofjvdYS4dLXAPf29z9pXwqpDUDLrX2CdGb-rLhkBbHiQVwI6C0O8DWOIURSY4Ryh_k-2YZJKrTHPflEQRoM4-BjM5EJKsT4JElbCIjdtrw9JzyOamkrU_jktu43QIjvqYuflI3NsW9ELe62nMD-zQU-gfcBKSlG-FowqlglGjooKRZxRIEdP0yG3x4J2R11g7TxISElLvQRc4PdLZERAuZtyrQ05og");'></div>
+<div class="p-3 flex flex-col gap-2">
+<div>
+<p class="text-[#0d141c] dark:text-white text-base font-bold leading-snug">星星方塊</p>
+<p class="text-[#49739c] dark:text-slate-400 text-xs">休閒拼圖</p>
+</div>
+<button class="w-full bg-primary text-white text-sm font-bold py-2 rounded-lg shadow-sm active:scale-95 transition-transform">
+                    立刻玩
+                </button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar (iOS style) -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-2xl font-bold">home</span>
+<span class="text-[10px] font-bold">首頁</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+<span class="text-[10px]">分類</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-2xl">star</span>
+<span class="text-[10px]">收藏</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px]">我的</span>
+</button>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>
